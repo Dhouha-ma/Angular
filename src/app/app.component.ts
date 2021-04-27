@@ -6,5 +6,19 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'NewProject10';
+  isAuth = false;
+  appareilOne = "machine a laver";
+  appareilTwo = "television";
+  appareilThree = "ordinateur";
+  constructor() {
+    setTimeout(
+      () => {
+        this.isAuth = true;
+      }, 4000
+    );
+  }
+
+  onAllumer() {
+    alert('hello')
+  }
 }
