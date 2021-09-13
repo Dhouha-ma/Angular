@@ -34,6 +34,10 @@ export class AppComponent implements OnInit{
   }
 
   onAllumer() {
-    alert('hello')
+    this.appareilService.switchOnAll();
+  }
+
+  onEteindre() {
+    this.appareilService.switchOffAll();
   }
 }
