@@ -1,85 +1,85 @@
-import { Subject } from "rxjs/Subject";
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Subject } from 'rxjs/Subject';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 
 @Injectable()
 export class AppareilService {
-
   appareilSubject = new Subject<any[]>();
-    private appareils = [];
+  private appareils = [];
 
-    constructor(private httpClient: HttpClient){
+  constructor(private httpClient: HttpClient) {}
 
-    }
+  emitAppareilSubject() {
+    this.appareilSubject.next(this.appareils.slice());
+  }
 
-    emitAppareilSubject(){
-      this.appareilSubject.next(this.appareils.slice());
+  switchOnAll() {
+    for (let appareil of this.appareils) {
+      appareil.status = 'allume';
     }
-    
-    switchOnAll(){
-        for(let appareil of this.appareils){
-            appareil.status = 'allume';
-        }
-        this.emitAppareilSubject();
-    }
+    this.emitAppareilSubject();
+  }
 
-    switchOffAll(){
-        for(let appareil of this.appareils){
-            appareil.status = 'eteint';
-        }
-        this.emitAppareilSubject();
+  switchOffAll() {
+    for (let appareil of this.appareils) {
+      appareil.status = 'eteint';
     }
+    this.emitAppareilSubject();
+  }
 
-    switchOnOne(index:number){
-        this.appareils[index].status = 'allume';
-        this.emitAppareilSubject();
-    }
-    
-    switchOffOne(index:number){
-        this.appareils[index].status = 'eteint';
-        this.emitAppareilSubject;
-    }
+  switchOnOne(index: number) {
+    this.appareils[index].status = 'allume';
+    this.emitAppareilSubject();
+  }
 
-    getAppareilById(id:number){
-      const appareil = this.appareils.find(
-        (appareilObject) => {
-          return appareilObject.id === id;
-        }
-      );
-      return appareil;
-    }
+  switchOffOne(index: number) {
+    this.appareils[index].status = 'eteint';
+    this.emitAppareilSubject;
+  }
 
-    addAppareil(name:string, status:string){
-      const appareilObject = {
-        id:0,
-        name:'',
-        status:''
-      };
-      appareilObject.name = name;
-      appareilObject.status = status;
-      appareilObject.id = this.appareils[(this.appareils.length - 1)].id + 1;
-      this.appareils.push(appareilObject);
-      this.emitAppareilSubject();
-    }
+  getAppareilById(id: number) {
+    const appareil = this.appareils.find((appareilObject) => {
+      return appareilObject.id === id;
+    });
+    return appareil;
+  }
 
-    saveAppareilsToServer(){
-      this.httpClient
-      .put('https://http-client-demo-f9838-default-rtdb.europe-west1.firebasedatabase.app/appareils.json', this.appareils)
+  addAppareil(name: string, status: string) {
+    const appareilObject = {
+      id: 0,
+      name: '',
+      status: '',
+    };
+    appareilObject.name = name;
+    appareilObject.status = status;
+    appareilObject.id = this.appareils[this.appareils.length - 1].id + 1;
+    this.appareils.push(appareilObject);
+    this.emitAppareilSubject();
+  }
+
+  saveAppareilsToServer() {
+    this.httpClient
+      .put(
+        'https://http-client-demo-f9838-default-rtdb.europe-west1.firebasedatabase.app/appareils.json',
+        this.appareils
+      )
       .subscribe(
-        () =>{
+        () => {
           console.log('enregistrement terminé');
         },
         (error) => {
           console.log(error);
         }
       );
-    }
+  }
 
-    getAppareilsFromServer(){
-      this.httpClient
-      .get<any[]>('https://http-client-demo-f9838-default-rtdb.europe-west1.firebasedatabase.app/appareils.json')
+  getAppareilsFromServer() {
+    this.httpClient
+      .get<any[]>(
+        'https://http-client-demo-f9838-default-rtdb.europe-west1.firebasedatabase.app/appareils.json'
+      )
       .subscribe(
-        (response) =>{
+        (response) => {
           this.appareils = response;
           this.emitAppareilSubject();
         },
@@ -87,5 +87,5 @@ export class AppareilService {
           console.log(error);
         }
       );
-    }
+  }
 }
