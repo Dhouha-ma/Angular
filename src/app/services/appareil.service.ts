@@ -1,5 +1,8 @@
 import { Subject } from "rxjs/Subject";
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 
+@Injectable()
 export class AppareilService {
 
   appareilSubject = new Subject<any[]>();
@@ -20,6 +23,10 @@ export class AppareilService {
           status: "eteint"
         }
       ];
+
+    constructor(private httpClient: HttpClient){
+
+    }
 
     emitAppareilSubject(){
       this.appareilSubject.next(this.appareils.slice());
@@ -69,5 +76,18 @@ export class AppareilService {
       appareilObject.id = this.appareils[(this.appareils.length - 1)].id + 1;
       this.appareils.push(appareilObject);
       this.emitAppareilSubject();
+    }
+
+    saveAppareilsToServer(){
+      this.httpClient
+      .put('https://http-client-demo-f9838-default-rtdb.europe-west1.firebasedatabase.app/appareils.json', this.appareils)
+      .subscribe(
+        () =>{
+          console.log('enregistrement terminé');
+        },
+        (error) => {
+          console.log(error);
+        }
+      )
     }
 }
