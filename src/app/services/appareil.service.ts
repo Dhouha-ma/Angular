@@ -6,23 +6,7 @@ import { Injectable } from "@angular/core";
 export class AppareilService {
 
   appareilSubject = new Subject<any[]>();
-    private appareils = [
-        {
-          id:1,
-          name:"machine a laver",
-          status: "allume"
-        },
-        {
-          id:2,
-          name:"television",
-          status: "allume"
-        },
-        {
-          id:3,
-          name:"ordinateur",
-          status: "eteint"
-        }
-      ];
+    private appareils = [];
 
     constructor(private httpClient: HttpClient){
 
@@ -88,6 +72,20 @@ export class AppareilService {
         (error) => {
           console.log(error);
         }
-      )
+      );
+    }
+
+    getAppareilsFromServer(){
+      this.httpClient
+      .get<any[]>('https://http-client-demo-f9838-default-rtdb.europe-west1.firebasedatabase.app/appareils.json')
+      .subscribe(
+        (response) =>{
+          this.appareils = response;
+          this.emitAppareilSubject();
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
     }
 }
